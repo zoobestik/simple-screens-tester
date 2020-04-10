@@ -14,11 +14,11 @@ async function process(page, url) {
   console.log("init...");
   const [browser, urls] = await Promise.all([
     puppeteer.launch(),
-    readSitemapUrls("./sitemap.xml"),
+    readSitemapUrls("./output/sitemap.xml"),
   ]);
 
   const length = urls.length;
-  const tabs = createPageIterator(browser, process, 15);
+  const [ tabs, pollClose ] = createPageIterator(browser, process, 15);
 
   for await (const get of tabs) {
     if (!urls.length) break;
@@ -28,5 +28,8 @@ async function process(page, url) {
     get(url);
   }
 
-  console.log("done.");
-})().catch((e) => console.log(e));
+  await pollClose();
+  await browser.close();
+})()
+  .then(() => console.log("done."))
+  .catch((e) => console.log(e));
