@@ -6,28 +6,27 @@ import { createPageIterator } from "./lib/manager.mjs";
 import { captureScreens } from "./lib/screens.mjs";
 
 async function process(page, url) {
-    await page.goto(url, { waitUntil: 'networkidle0' });
-    await captureScreens(page, new URL(url).pathname);
+  await page.goto(url, { waitUntil: "networkidle0" });
+  await captureScreens(page, new URL(url).pathname);
 }
 
 (async () => {
-    console.log('init...');
-    const [ browser, urls ] = await Promise.all([
-        puppeteer.launch(),
-        readSitemapUrls('./sitemap.xml')
-    ]);
+  console.log("init...");
+  const [browser, urls] = await Promise.all([
+    puppeteer.launch(),
+    readSitemapUrls("./sitemap.xml"),
+  ]);
 
-    const length = urls.length;
-    const tabs = createPageIterator(browser, process, 15);
+  const length = urls.length;
+  const tabs = createPageIterator(browser, process, 15);
 
-    for await (const get of tabs) {
-        if (!urls.length) break;
+  for await (const get of tabs) {
+    if (!urls.length) break;
 
-        const url = urls.pop();
-        console.log(`get ${length - urls.length} of ${length} - ${url}`);
-        get(url);
-    }
+    const url = urls.pop();
+    console.log(`get ${length - urls.length} of ${length} - ${url}`);
+    get(url);
+  }
 
-    console.log('done.')
-})()
-    .catch(e => console.log(e));
+  console.log("done.");
+})().catch((e) => console.log(e));
