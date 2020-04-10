@@ -1,5 +1,6 @@
 import "core-js";
 import puppeteer from "puppeteer";
+import { poolSize } from './lib/config.json';
 
 import { readSitemapUrls } from "./lib/files.mjs";
 import { createPageIterator } from "./lib/manager.mjs";
@@ -18,7 +19,7 @@ async function process(page, url) {
   ]);
 
   const length = urls.length;
-  const [ tabs, pollClose ] = createPageIterator(browser, process, 15);
+  const [ tabs, pollClose ] = createPageIterator(browser, process, poolSize);
 
   for await (const get of tabs) {
     if (!urls.length) break;

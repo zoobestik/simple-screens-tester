@@ -1,0 +1,5 @@
+{
+  "debug": false,
+  "poolSize": 15,
+  "tolerance": 6
+}
