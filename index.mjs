@@ -1,6 +1,6 @@
 import "core-js";
 import puppeteer from "puppeteer";
-import { poolSize } from './lib/config.json';
+import { launch, poolSize } from './lib/config.json';
 
 import { readSitemapUrls } from "./lib/files.mjs";
 import { createPageIterator } from "./lib/manager.mjs";
@@ -14,7 +14,7 @@ async function process(page, url) {
 (async () => {
   console.log("init...");
   const [browser, urls] = await Promise.all([
-    puppeteer.launch(),
+    puppeteer.launch(launch || {}),
     readSitemapUrls("./output/sitemap.xml"),
   ]);
 
