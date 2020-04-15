@@ -1,5 +1,6 @@
 import "core-js";
 import puppeteer from "puppeteer";
+import glob from "minimatch";
 import config from "./lib/config.mjs";
 import { debug } from "./lib/index.mjs";
 
@@ -30,6 +31,13 @@ async function process(page, url) {
   let i = 0;
 
   for (const url of urls) {
+    const isExclude = config.exclude.some((pattern) => glob(url, pattern));
+
+    if (isExclude) {
+      console.log(`get ${++i} of ${urls.length} [excluded] ${url}`);
+      continue;
+    }
+
     console.log(`get ${++i} of ${urls.length} - ${url}`);
     await addQueue(url);
   }
