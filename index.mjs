@@ -1,6 +1,6 @@
 import "core-js";
 import puppeteer from "puppeteer";
-import { launch, poolSize } from './lib/config.json';
+import config from './lib/config.mjs';
 
 import { readSitemapUrls } from "./lib/files.mjs";
 import { createPageIterator } from "./lib/manager.mjs";
@@ -14,12 +14,12 @@ async function process(page, url) {
 (async () => {
   console.log("init...");
   const [browser, urls] = await Promise.all([
-    puppeteer.launch(launch || {}),
+    puppeteer.launch(config.launch || {}),
     readSitemapUrls("./output/sitemap.xml"),
   ]);
 
   const length = urls.length;
-  const [ tabs, pollClose ] = createPageIterator(browser, process, poolSize);
+  const [ tabs, pollClose ] = createPageIterator(browser, process, config.poolSize);
 
   for await (const get of tabs) {
     if (!urls.length) break;

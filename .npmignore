@@ -1,0 +1,9 @@
+*
+!lib
+!lib/**
+!index.js
+!index.mjs
+!CHANGELOG.md
+!CONTRIBUTING.md
+!LICENSE
+!README.md
