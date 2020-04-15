@@ -1,6 +1,6 @@
 *
-!lib
 !lib/**
+!codecs/**
 !index.js
 !index.mjs
 !CHANGELOG.md

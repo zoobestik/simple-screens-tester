@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 NAME="zoobestik/simple-screens-tester"
-VERSION=1
+VERSION=2
 
 echo "Build docker image v$VERSION..."
 docker build --rm --compress --no-cache --pull -t "$NAME:$VERSION" .
