@@ -28,7 +28,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,mjs,css,md}": "prettier --write"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
