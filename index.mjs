@@ -1,14 +1,17 @@
 import "core-js";
 import puppeteer from "puppeteer";
 import config from "./lib/config.mjs";
+import { debug } from "./lib/index.mjs";
 
-import { readSitemapUrls } from "./lib/files.mjs";
-import { createPageIterator } from "./lib/manager.mjs";
+import readSitemapUrls from "./codecs/sitemap.mjs";
+import { createBrowserQueue } from "./lib/queue.mjs";
 import { captureScreens } from "./lib/screens.mjs";
 
 async function process(page, url) {
   await page.goto(url, { waitUntil: "networkidle0" });
+  debug("\tdownloaded ", url);
   await captureScreens(page, new URL(url).pathname);
+  debug("\tcaptured ", url);
 }
 
 (async () => {
@@ -18,22 +21,20 @@ async function process(page, url) {
     readSitemapUrls("./output/sitemap.xml"),
   ]);
 
-  const length = urls.length;
-  const [tabs, pollClose] = createPageIterator(
+  const [addQueue, waitQueueDone] = createBrowserQueue(
     browser,
     process,
     config.poolSize
   );
 
-  for await (const get of tabs) {
-    if (!urls.length) break;
+  let i = 0;
 
-    const url = urls.pop();
-    console.log(`get ${length - urls.length} of ${length} - ${url}`);
-    get(url);
+  for (const url of urls) {
+    console.log(`get ${++i} of ${urls.length} - ${url}`);
+    await addQueue(url);
   }
 
-  await pollClose();
+  await waitQueueDone();
   await browser.close();
 })()
   .then(() => console.log("done."))
